@@ -10,7 +10,6 @@ Our paper is currently under review, and **the code of Point-LIO will be release
 ### 1.1 Our paper
 
 ### 1.2 Our accompanying videos
-Our **accompanying videos** are now available on **YouTube**.
 
 ## 2. What can Point-LIO do?
 ### 2.1 Simultaneous LiDAR localization and mapping (SLAM) without motion distortion
