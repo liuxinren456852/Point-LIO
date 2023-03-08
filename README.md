@@ -8,8 +8,10 @@
 Our paper is currently under review, and **the code of Point-LIO will be released as our work is accepted**.
 
 ### 1.1 Our paper
+Will be released on 16th March, 2023.
 
 ### 1.2 Our accompanying videos
+Will be released on 16th March, 2023.
 
 ## 2. What can Point-LIO do?
 ### 2.1 Simultaneous LiDAR localization and mapping (SLAM) without motion distortion
