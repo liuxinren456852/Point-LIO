@@ -14,20 +14,20 @@ float  plane_thr;
 double filter_size_surf_min, filter_size_map_min, fov_deg;
 double cube_len; 
 float  DET_RANGE;
-bool   imu_en;
+bool   imu_en, gravity_align, non_station_start;
 double imu_time_inte;
 double laser_point_cov, acc_norm;
 double vel_cov, acc_cov_input, gyr_cov_input;
 double gyr_cov_output, acc_cov_output, b_gyr_cov, b_acc_cov;
 double imu_meas_acc_cov, imu_meas_omg_cov; 
 int    lidar_type, pcd_save_interval;
-std::vector<double> gravity_init;
+std::vector<double> gravity_init, gravity;
 std::vector<double> extrinT;
 std::vector<double> extrinR;
 bool   runtime_pos_log, pcd_save_en, path_en, extrinsic_est_en = true;
 bool   scan_pub_en, scan_body_pub_en;
 shared_ptr<Preprocess> p_pre;
-double time_diff_lidar_to_imu = 0.0;
+double time_lag_imu_to_lidar = 0.0;
 
 void readParameters(ros::NodeHandle &nh)
 {
@@ -48,13 +48,14 @@ void readParameters(ros::NodeHandle &nh)
   nh.param<int>("common/con_frame_num",con_frame_num,1);
   nh.param<bool>("common/cut_frame",cut_frame,false);
   nh.param<double>("common/cut_frame_time_interval",cut_frame_time_interval,0.1);
-  nh.param<double>("common/time_diff_lidar_to_imu",time_diff_lidar_to_imu,0.0);
+  nh.param<double>("common/time_lag_imu_to_lidar",time_lag_imu_to_lidar,0.0);
   nh.param<double>("filter_size_surf",filter_size_surf_min,0.5);
   nh.param<double>("filter_size_map",filter_size_map_min,0.5);
   nh.param<double>("cube_side_length",cube_len,200);
   nh.param<float>("mapping/det_range",DET_RANGE,300.f);
   nh.param<double>("mapping/fov_degree",fov_deg,180);
   nh.param<bool>("mapping/imu_en",imu_en,true);
+  nh.param<bool>("mapping/start_in_aggressive_motion",non_station_start,false);
   nh.param<bool>("mapping/extrinsic_est_en",extrinsic_est_en,true);
   nh.param<double>("mapping/imu_time_inte",imu_time_inte,0.005);
   nh.param<double>("mapping/lidar_meas_cov",laser_point_cov,0.1);
@@ -73,7 +74,9 @@ void readParameters(ros::NodeHandle &nh)
   nh.param<int>("preprocess/scan_rate", p_pre->SCAN_RATE, 10);
   nh.param<int>("preprocess/timestamp_unit", p_pre->time_unit, 1);
   nh.param<double>("mapping/match_s", match_s, 81);
-  nh.param<std::vector<double>>("mapping/gravity", gravity_init, std::vector<double>());
+  nh.param<bool>("mapping/gravity_align", gravity_align, true);
+  nh.param<std::vector<double>>("mapping/gravity", gravity, std::vector<double>());
+  nh.param<std::vector<double>>("mapping/gravity_init", gravity_init, std::vector<double>());
   nh.param<std::vector<double>>("mapping/extrinsic_T", extrinT, std::vector<double>());
   nh.param<std::vector<double>>("mapping/extrinsic_R", extrinR, std::vector<double>());
   nh.param<bool>("odometry/publish_odometry_without_downsample", publish_odometry_without_downsample, false);
